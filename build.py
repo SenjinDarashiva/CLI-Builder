@@ -11,6 +11,7 @@ from subprocess import Popen, PIPE
 def parseCLIArguments():
     # TODO add arguments to specify temp folders 
     parser = argparse.ArgumentParser(description='Options')
+
     parser.add_argument("-p", "--pdflatex", action="store_true", 
         help="Use pdflatex to compile default is pdflatex", 
         default=True)
@@ -33,8 +34,7 @@ def parseCLIArguments():
 
 def folderPrep():
     logger.info("Creating temporary folder")
-    subprocess.call(["mkdir", "-p", "out"])
-    dstdir = "out/"
+    if not os.path.exists("out"): os.makedirs("out")
     return;
 
 def compilePDFLatex(bib, lang):
@@ -106,15 +106,20 @@ FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=FORMAT)
 
 args = parseCLIArguments();
-folderPrep()
+
 
 if args.clean:
-    subprocess.call(["rm", "-rf", "out"])
+    try:
+        shutil.rmtree("out")
+    except FileNotFoundError:
+        logger.info("Temp folder not found")
 elif args.latex:
+    folderPrep()
     logger.info("Using latex")
     compileLatex(args.bibtex, args.language)
     moveresult()
 elif args.pdflatex:
+    folderPrep()
     logger.info("Using pdflatex")
     compilePDFLatex(args.bibtex , args.language)
     moveresult()
