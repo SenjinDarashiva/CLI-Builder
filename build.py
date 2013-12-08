@@ -27,6 +27,7 @@ def parseCLIArguments():
         help="Specify the language to compile .tex files need to be on the form filename-languagecode.tex "+
         "for example CV-EN.tex default is to compile all .tex files", default=".tex")
     args = parser.parse_args()
+    
     return args;
 
 def folderPrep():
@@ -46,15 +47,16 @@ def compilePDFLatex(bib, lang):
                     logger.info("Bibtex for "+ basename)
                     err = subprocess.Popen(["pdflatex", "--output-directory", "out/",  basename ], stdout=PIPE)
                     output = err.communicate()[0]
-                    
-                    err = subprocess.Popen(["bibtex","out/" + basename[:-4]], stdout=PIPE)
-                    output = err.communicate()[0]
 
-                    err = subprocess.Popen(["pdflatex", "--output-directory", "out/",  basename ], stdout=PIPE)
+                    logger.info("Running bibtex")
+                    err = subprocess.Popen(["bibtex","out/" + basename[:-4]], stdout=PIPE)
                     output = err.communicate()[1]
 
+                    err = subprocess.Popen(["pdflatex", "--output-directory", "out/",  basename ], stdout=PIPE)
+                    output = err.communicate()[2]
+
                 err = subprocess.Popen(["pdflatex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                output = err.communicate()[2]
+                output = err.communicate()[3]
 
             except Exception:
                 logger.warning("Error while compiling " +  basename)
@@ -68,15 +70,18 @@ def compileLatex(bib, lang):
             logger.info("Compiling "+ basename)
             try:
                 if( bib):
-                    logger.info("Bibtex for "+ basename)
                     err = subprocess.Popen(["latex", "--output-directory", "out/",  basename ], stdout=PIPE)
                     output = err.communicate()[0]
-                    
-                    err = subprocess.Popen(["bibtex","out/" + basename[:3] ], stdout=PIPE)
-                    output = err.communicate()[0]
+
+                    logger.info("Running bibtex")
+                    err = subprocess.Popen(["bibtex","out/" + basename[:-4]], stdout=PIPE)
+                    output = err.communicate()[1]
+
+                    err = subprocess.Popen(["latex", "--output-directory", "out/",  basename ], stdout=PIPE)
+                    output = err.communicate()[2]
 
                 err = subprocess.Popen(["latex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                output = err.communicate()[0]
+                output = err.communicate()[3]
             except Exception:
                 logger.warning("Error while compiling " +  basename + " trace: " + output)
     return;
