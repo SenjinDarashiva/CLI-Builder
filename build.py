@@ -24,8 +24,9 @@ def parseCLIArguments():
         help="Remove temporary files", 
         default=False)
     parser.add_argument("-d", "--language", type=str, 
-        help="Specify the language to compile .tex files need to be on the form filename-languagecode.tex "+
-        "for example CV-EN.tex default is to compile all .tex files", default=".tex")
+        help="Specify the language to compile .tex files need to be on the" + 
+        " form filename-languagecode.tex for example CV-EN.tex default is " +
+        "to compile all .tex files", default=".tex")
     args = parser.parse_args()
     
     return args;
@@ -35,6 +36,7 @@ def folderPrep():
     subprocess.call(["mkdir", "-p", "out"])
     dstdir = "out/"
     return;
+
 def compilePDFLatex(bib, lang):
     # adds .tex to lang if .tex is not supplied
     if(lang.endswith(".tex") != True):
@@ -61,6 +63,7 @@ def compilePDFLatex(bib, lang):
             except Exception:
                 logger.warning("Error while compiling " +  basename)
     return;
+
 def compileLatex(bib, lang):
     # adds .tex to lang if .tex is not supplied
     if(lang.endswith(".tex") != True):
@@ -97,19 +100,19 @@ def moveresult():
 # ======================== Main Program =======================================
 # =============================================================================
 
-args = parseCLIArguments();
-
 logger = logging.getLogger("standard logger")
 logger.setLevel(logging.INFO)
 FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=FORMAT)
 
+args = parseCLIArguments();
 folderPrep()
+
 if args.clean:
     subprocess.call(["rm", "-rf", "out"])
 elif args.latex:
     logger.info("Using latex")
-    compileLatex(False, args.language)
+    compileLatex(args.bibtex, args.language)
     moveresult()
 elif args.pdflatex:
     logger.info("Using pdflatex")
