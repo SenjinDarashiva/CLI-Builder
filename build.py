@@ -73,6 +73,7 @@ def compileLatex(bib, lang):
             logger.info("Compiling "+ basename)
             try:
                 if( bib):
+                    logger.info("Bibtex for "+ basename)
                     err = subprocess.Popen(["latex", "--output-directory", "out/",  basename ], stdout=PIPE)
                     output = err.communicate()[0]
 
@@ -86,7 +87,7 @@ def compileLatex(bib, lang):
                 err = subprocess.Popen(["latex", "--output-directory", "out/",  basename ], stdout=PIPE)
                 output = err.communicate()[3]
             except Exception:
-                logger.warning("Error while compiling " +  basename + " trace: " + output)
+                logger.warning("Error while compiling " +  basename)
     return;
 def moveresult():
     logger.info("Moving output from temp directory")
