@@ -1,13 +1,17 @@
 CLI-Builder
 ===========
 
-Latex build script in python
+A simple latex build script written in python that compiles all tex files in the current folder
+with the output data in a temporary out folder.<br/>
+After compilation it transfers the output .pdf or .dvi files to the current location.<br/>
 
-usage: python build.py [-h] [-p] [-l] [-b] [-c] [-d LANGUAGE]
+usage: 
 ---------------------
+python build.py [-h] [-p] [-l] [-b] [-c] [-d LANGUAGE]<br/>
+
 Options:
 ---------------------
-optional arguments:
+optional arguments:<br/>
   -h, --help            show this help message and exit<br/>
   -p, --pdflatex        Use pdflatex to compile default is pdflatex<br/>
   -l, --latex           Use latex to compile default is pdflatex<br/>
