@@ -77,16 +77,17 @@ def compilePDFLatex(bib, lang):
 
                     logger.info("Running bibtex")
                     err = subprocess.Popen(["bibtex","out/" + basename[:-4]], stdout=PIPE)
-                    output = err.communicate()[1]
+                    output = err.communicate()[0]
 
                     err = subprocess.Popen(["pdflatex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                    output = err.communicate()[2]
+                    output = err.communicate()[0]
 
                 err = subprocess.Popen(["pdflatex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                output = err.communicate()[3]
+                output = err.communicate()[0]
 
-            except Exception:
+            except Exception as e:
                 logger.warning("Error while compiling " +  basename)
+                logger.info(e)
     return;
 
 def compileLatex(bib, lang):
