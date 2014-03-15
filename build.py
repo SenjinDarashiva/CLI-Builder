@@ -52,6 +52,8 @@ def parseCLIArguments():
         help="Specify the language to compile .tex files need to be on the" + 
         " form filename-languagecode.tex for example CV-EN.tex default is " +
         "to compile all .tex files", default=".tex")
+    parser.add_argument("filename", type=str,  help="If specified only this file and the corresponding bibtex will be built")
+
     args = parser.parse_args()
     
     return args;
@@ -87,10 +89,21 @@ def buildFileWithBib(fileName, buildCommand):
         logger.warning("Error while compiling " +  fileName)
         logger.info(output)
 
-def compilePDFLatex(bib, lang):
+def compilePDFLatex(bib, lang, filename):
     # adds .tex to lang if .tex is not supplied
     if(lang.endswith(".tex") != True):
         lang = lang + ".tex"
+    if (filename != None):
+        logger.info("Compiling "+ filename)
+            try:
+                if(bib):
+                    buildFileWithBib(filename, "pdflatex")
+                else:
+                    buildFile(filename, "pdflatex")
+        except Exception as e:
+            logger.warning("Error while compiling " +  filename)
+            logger.info(e)
+        return;
     for basename in os.listdir(os.getcwd()):
         if basename.endswith(lang):
             logger.info("Compiling "+ basename)
@@ -104,10 +117,21 @@ def compilePDFLatex(bib, lang):
                 logger.info(e)
     return;
 
-def compileLatex(bib, lang):
+def compileLatex(bib, lang, filename):
     # adds .tex to lang if .tex is not supplied
     if(lang.endswith(".tex") != True):
         lang = lang + ".tex"
+    if (filename != None):
+        logger.info("Compiling "+ filename)
+            try:
+                if(bib):
+                    buildFileWithBib(filename, "latex")
+                else:
+                    buildFile(filename, "latex")
+        except Exception as e:
+            logger.warning("Error while compiling " +  filename)
+            logger.info(e)
+        return;
     for basename in os.listdir(os.getcwd()):
         if basename.endswith(lang):
             logger.info("Compiling "+ basename)
@@ -148,10 +172,10 @@ if args.clean:
 elif args.latex:
     folderPrep()
     logger.info("Using latex")
-    compileLatex(args.bibtex, args.language)
+    compileLatex(args.bibtex, args.language, args.filename)
     moveresult()
 elif args.pdflatex:
     folderPrep()
     logger.info("Using pdflatex")
-    compilePDFLatex(args.bibtex , args.language)
+    compilePDFLatex(args.bibtex , args.language, args.filename)
     moveresult()
