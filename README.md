@@ -20,5 +20,5 @@ optional arguments:<br/>
   -d LANGUAGE, --language LANGUAGE<br/>
                         Specify the language to compile .tex files need to be
                         on the form filename-languagecode.tex for example CV-
-                        EN.tex default is to compile all .tex files
-   FILENAME 			IF supplied only builds the specified file
+                        EN.tex default is to compile all .tex files<br/>
+   FILENAME 			IF supplied only builds the specified file<br/>
