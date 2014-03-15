@@ -34,7 +34,6 @@ from subprocess import Popen, PIPE
 
 # Parses arguments from cli
 def parseCLIArguments():
-    # TODO add arguments to specify temp folders 
     parser = argparse.ArgumentParser(description='Options')
 
     parser.add_argument("-p", "--pdflatex", action="store_true", 
@@ -62,6 +61,32 @@ def folderPrep():
     if not os.path.exists("out"): os.makedirs("out")
     return;
 
+def buildFile(fileName, buildCommand):
+    try:
+        err = subprocess.Popen([buildCommand, "--output-directory", "out/",  fileName ], stdout=PIPE)
+        output = err.communicate()[0]
+    except Exception as e:
+        logger.warning("Error while compiling " +  fileName)
+        logger.info(output)
+
+def buildFileWithBib(fileName, buildCommand):
+    try:
+        err = subprocess.Popen([buildCommand, "--output-directory", "out/",  fileName ], stdout=PIPE)
+        output = err.communicate()[0]
+        logger.info("Running bibtex")
+        
+        err = subprocess.Popen(["bibtex","out/" + fileName[:-4]], stdout=PIPE)
+        output = err.communicate()[0]
+        
+        err = subprocess.Popen([buildCommand, "--output-directory", "out/",  fileName ], stdout=PIPE)
+        output = err.communicate()[0]
+        
+        err = subprocess.Popen([buildCommand, "--output-directory", "out/",  fileName ], stdout=PIPE)
+        output = err.communicate()[0]
+    except Exception as e:
+        logger.warning("Error while compiling " +  fileName)
+        logger.info(output)
+
 def compilePDFLatex(bib, lang):
     # adds .tex to lang if .tex is not supplied
     if(lang.endswith(".tex") != True):
@@ -71,20 +96,9 @@ def compilePDFLatex(bib, lang):
             logger.info("Compiling "+ basename)
             try:
                 if(bib):
-                    logger.info("Bibtex for "+ basename)
-                    err = subprocess.Popen(["pdflatex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                    output = err.communicate()[0]
-
-                    logger.info("Running bibtex")
-                    err = subprocess.Popen(["bibtex","out/" + basename[:-4]], stdout=PIPE)
-                    output = err.communicate()[0]
-
-                    err = subprocess.Popen(["pdflatex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                    output = err.communicate()[0]
-
-                err = subprocess.Popen(["pdflatex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                output = err.communicate()[0]
-
+                    buildFileWithBib(basename, "pdflatex")
+                else:
+                    buildFile(basename, "pdflatex")
             except Exception as e:
                 logger.warning("Error while compiling " +  basename)
                 logger.info(e)
@@ -98,23 +112,14 @@ def compileLatex(bib, lang):
         if basename.endswith(lang):
             logger.info("Compiling "+ basename)
             try:
-                if( bib):
-                    logger.info("Bibtex for "+ basename)
-                    err = subprocess.Popen(["latex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                    output = err.communicate()[0]
-
-                    logger.info("Running bibtex")
-                    err = subprocess.Popen(["bibtex","out/" + basename[:-4]], stdout=PIPE)
-                    output = err.communicate()[1]
-
-                    err = subprocess.Popen(["latex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                    output = err.communicate()[2]
-
-                err = subprocess.Popen(["latex", "--output-directory", "out/",  basename ], stdout=PIPE)
-                output = err.communicate()[3]
+                if(bib):
+                    buildFileWithBib(basename, "latex")
+                else:
+                    buildFile(basename, "latex")
             except Exception:
                 logger.warning("Error while compiling " +  basename)
     return;
+
 def moveresult():
     logger.info("Moving output from temp directory")
     for basename in os.listdir(os.getcwd() + "/out/"):

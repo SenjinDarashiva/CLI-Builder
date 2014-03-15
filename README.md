@@ -7,7 +7,7 @@ After compilation it transfers the output .pdf or .dvi files to the current loca
 
 usage: 
 ---------------------
-python build.py [-h] [-p] [-l] [-b] [-c] [-d LANGUAGE]<br/>
+python build.py [-h] [-p] [-l] [-b] [-c] [-d LANGUAGE] FILENAME<br/>
 
 Options:
 ---------------------
@@ -21,3 +21,4 @@ optional arguments:<br/>
                         Specify the language to compile .tex files need to be
                         on the form filename-languagecode.tex for example CV-
                         EN.tex default is to compile all .tex files
+   FILENAME 			IF supplied only builds the specified file
