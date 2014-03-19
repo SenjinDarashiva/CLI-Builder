@@ -52,7 +52,7 @@ def parseCLIArguments():
         help="Specify the language to compile .tex files need to be on the" + 
         " form filename-languagecode.tex for example CV-EN.tex default is " +
         "to compile all .tex files", default=".tex")
-    parser.add_argument("filename", type=str,  help="If specified only this file and the corresponding bibtex will be built")
+    parser.add_argument("filename", type=str, nargs='?', help="If specified only this file and the corresponding bibtex will be built", default=None)
 
     args = parser.parse_args()
     
@@ -95,11 +95,11 @@ def compilePDFLatex(bib, lang, filename):
         lang = lang + ".tex"
     if (filename != None):
         logger.info("Compiling "+ filename)
-            try:
-                if(bib):
-                    buildFileWithBib(filename, "pdflatex")
-                else:
-                    buildFile(filename, "pdflatex")
+        try:
+            if(bib):
+                buildFileWithBib(filename, "pdflatex")
+            else:
+                buildFile(filename, "pdflatex")
         except Exception as e:
             logger.warning("Error while compiling " +  filename)
             logger.info(e)
@@ -123,11 +123,11 @@ def compileLatex(bib, lang, filename):
         lang = lang + ".tex"
     if (filename != None):
         logger.info("Compiling "+ filename)
-            try:
-                if(bib):
-                    buildFileWithBib(filename, "latex")
-                else:
-                    buildFile(filename, "latex")
+        try:
+            if(bib):
+                buildFileWithBib(filename, "latex")
+            else:
+                buildFile(filename, "latex")
         except Exception as e:
             logger.warning("Error while compiling " +  filename)
             logger.info(e)
