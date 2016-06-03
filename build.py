@@ -20,7 +20,7 @@ __copyright__ = "Copyright 2013, CLI-Builder"
 __license__ = "GPL"
 __version__ = "2"
 __maintainer__ = "Fredrik Loch"
-__email__ = "fredrik.loch@bahnhof.se"
+__email__ = "mail@fredrikloch.me"
 __status__ = "Development"
 
 
